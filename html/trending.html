@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trending — Hamro Samajik Hub</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #f5f4f0;
+      --surface:   #ffffff;
+      --border:    #e8e5df;
+      --text:      #1a1916;
+      --muted:     #8a8680;
+      --accent:    #3d6b4f;
+      --accent-lt: #eaf2ed;
+      --tag-bg:    #f0ede7;
+      --col-maulik:  #c9b99a;
+      --col-krish:   #a8c4b8;
+      --col-khushi:  #d4a8b0;
+      --col-anwesha: #b8a8d4;
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    a { text-decoration: none; color: inherit; }
+    button { cursor: pointer; border: none; background: none; font-family: inherit; }
+
+    /* ── Navbar ── */
+    .navbar {
+      position: sticky; top: 0; z-index: 200;
+      display: flex; align-items: center; gap: 1rem;
+      padding: 0 2rem; height: 56px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+    .brand { display: flex; align-items: center; gap: .6rem; flex-shrink: 0; }
+    .brand-logo {
+      width: 32px; height: 32px; border-radius: 8px;
+      background: var(--accent); color: #fff;
+      font-size: .9rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Lora', serif;
+    }
+    .brand-name { font-size: .95rem; font-weight: 600; letter-spacing: -.01em; }
+    .nav-links { display: flex; gap: .25rem; margin-left: 1.5rem; }
+    .nav-link {
+      padding: .35rem .75rem; border-radius: 6px;
+      font-size: .85rem; color: var(--muted);
+      transition: background .15s, color .15s;
+    }
+    .nav-link:hover { background: var(--tag-bg); color: var(--text); }
+    .nav-link.active { background: var(--accent-lt); color: var(--accent); font-weight: 600; }
+    .nav-right { margin-left: auto; }
+    .login-btn {
+      padding: .35rem .9rem; border-radius: 6px;
+      background: var(--text); color: #fff;
+      font-size: .82rem; font-weight: 600;
+      transition: opacity .15s;
+    }
+    .login-btn:hover { opacity: .8; }
+
+    /* ── Page Shell ── */
+    .page {
+      max-width: 1100px; margin: 0 auto;
+      padding: 2rem 1.25rem;
+      display: grid;
+      grid-template-columns: 220px 1fr 220px;
+      gap: 1.5rem;
+      align-items: start;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.1rem 1.2rem;
+    }
+    .sidebar-heading {
+      font-size: .74rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: .07em;
+      color: var(--muted); margin-bottom: .85rem;
+    }
+
+    /* ── Left sidebar ── */
+    .left-sidebar { display: flex; flex-direction: column; gap: 1rem; }
+    .welcome-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1.3rem 1.2rem;
+    }
+    .welcome-badge {
+      display: inline-block;
+      padding: .2rem .6rem;
+      background: var(--accent-lt); color: var(--accent);
+      border-radius: 20px; font-size: .7rem; font-weight: 700;
+      letter-spacing: .05em; text-transform: uppercase; margin-bottom: .7rem;
+    }
+    .welcome-card h1 {
+      font-family: 'Lora', serif;
+      font-size: 1rem; line-height: 1.5; font-weight: 600; margin-bottom: .5rem;
+    }
+    .welcome-card p { font-size: .8rem; color: var(--muted); line-height: 1.55; }
+
+    .quick-links { display: flex; flex-direction: column; gap: .4rem; }
+    .quick-link {
+      display: flex; align-items: center; gap: .6rem;
+      padding: .45rem .6rem; border-radius: 8px;
+      font-size: .84rem; color: var(--muted);
+      transition: background .15s, color .15s;
+    }
+    .quick-link:hover { background: var(--tag-bg); color: var(--text); }
+    .ql-icon {
+      width: 26px; height: 26px; border-radius: 6px;
+      background: var(--tag-bg);
+      display: flex; align-items: center; justify-content: center;
+      font-size: .74rem; font-weight: 700; color: var(--muted);
+    }
+
+    /* ── Main content ── */
+    .main-content { display: flex; flex-direction: column; gap: 1.25rem; }
+
+    .trending-header-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 1rem 1.2rem;
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .75rem;
+    }
+    .th-left h2 {
+      font-family: 'Lora', serif;
+      font-size: 1.2rem; font-weight: 600; letter-spacing: -.01em;
+    }
+    .th-left p { font-size: .78rem; color: var(--muted); margin-top: .15rem; }
+    .filter-tabs { display: flex; gap: .3rem; }
+    .filter-tab {
+      padding: .3rem .7rem; border-radius: 20px;
+      font-size: .78rem; font-weight: 600;
+      color: var(--muted); background: var(--tag-bg);
+      transition: background .15s, color .15s;
+    }
+    .filter-tab.active { background: var(--accent); color: #fff; }
+    .filter-tab:hover:not(.active) { background: var(--border); color: var(--text); }
+
+    /* ── Stories bar ── */
+    .stories-bar {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: .9rem 1.2rem;
+    }
+    .stories-scroll {
+      display: flex; gap: .9rem; overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .stories-scroll::-webkit-scrollbar { display: none; }
+    .story {
+      display: flex; flex-direction: column; align-items: center; gap: .35rem;
+      flex-shrink: 0; cursor: pointer;
+    }
+    .story-ring {
+      padding: 2.5px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent) 0%, #a8c4b8 100%);
+    }
+    .story-avatar {
+      width: 46px; height: 46px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: .9rem; color: var(--text);
+      border: 2.5px solid var(--surface);
+    }
+    .story-name { font-size: .72rem; color: var(--muted); }
+
+    .bg-maulik  { background: var(--col-maulik); }
+    .bg-krish   { background: var(--col-krish); }
+    .bg-khushi  { background: var(--col-khushi); }
+    .bg-anwesha { background: var(--col-anwesha); }
+
+    /* ── Photo Grid (masonry 2-col) ── */
+    .photo-grid { columns: 2; column-gap: .75rem; }
+
+    .photo-card {
+      break-inside: avoid;
+      margin-bottom: .75rem;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      cursor: pointer;
+      position: relative;
+      display: block;
+      animation: fadeUp .35s ease both;
+    }
+    .photo-card:nth-child(1)  { animation-delay: .04s; }
+    .photo-card:nth-child(2)  { animation-delay: .08s; }
+    .photo-card:nth-child(3)  { animation-delay: .12s; }
+    .photo-card:nth-child(4)  { animation-delay: .16s; }
+    .photo-card:nth-child(5)  { animation-delay: .20s; }
+    .photo-card:nth-child(6)  { animation-delay: .24s; }
+    .photo-card:nth-child(7)  { animation-delay: .28s; }
+    .photo-card:nth-child(8)  { animation-delay: .32s; }
+    .photo-card:nth-child(9)  { animation-delay: .36s; }
+    .photo-card:nth-child(10) { animation-delay: .40s; }
+
+    .photo-card:hover .photo-overlay { opacity: 1; }
+
+    .photo-img {
+      width: 100%; display: block;
+      background-size: cover; background-position: center;
+      position: relative;
+    }
+    .img-1  { height: 220px; background: linear-gradient(145deg,#c9d9cc 0%,#a8c4b8 40%,#7aab94 100%); }
+    .img-2  { height: 160px; background: linear-gradient(160deg,#f0e0d0 0%,#d4a8b0 60%,#c49080 100%); }
+    .img-3  { height: 200px; background: linear-gradient(130deg,#e0daf0 0%,#b8a8d4 50%,#9888c0 100%); }
+    .img-4  { height: 260px; background: linear-gradient(155deg,#f0ead8 0%,#c9b99a 55%,#b0a080 100%); }
+    .img-5  { height: 180px; background: linear-gradient(140deg,#cce0d8 0%,#88b8a8 50%,#60a090 100%); }
+    .img-6  { height: 240px; background: linear-gradient(150deg,#fce8d8 0%,#e8b898 50%,#d09070 100%); }
+    .img-7  { height: 170px; background: linear-gradient(125deg,#d8e8f0 0%,#90b8d0 50%,#6898b8 100%); }
+    .img-8  { height: 210px; background: linear-gradient(165deg,#e8d8f0 0%,#c0a0d8 50%,#a080c0 100%); }
+    .img-9  { height: 190px; background: linear-gradient(135deg,#d8f0e8 0%,#98d0b8 50%,#70b8a0 100%); }
+    .img-10 { height: 230px; background: linear-gradient(145deg,#f8e8d8 0%,#e0b888 50%,#c89060 100%); }
+
+    .photo-overlay {
+      position: absolute; inset: 0;
+      background: rgba(26,25,22,.52);
+      opacity: 0; transition: opacity .22s;
+      display: flex; align-items: flex-end; padding: .9rem;
+    }
+    .overlay-stats { display: flex; gap: .8rem; }
+    .ostat {
+      display: flex; align-items: center; gap: .3rem;
+      color: #fff; font-size: .8rem; font-weight: 600;
+    }
+    .ostat svg { width: 14px; height: 14px; fill: #fff; }
+
+    .photo-meta {
+      padding: .65rem .85rem .75rem;
+      display: flex; align-items: center; gap: .55rem;
+    }
+    .pmeta-avatar {
+      width: 24px; height: 24px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .65rem; font-weight: 700; color: var(--text); flex-shrink: 0;
+    }
+    .pmeta-name { font-size: .8rem; font-weight: 600; flex: 1; }
+    .pmeta-tag  { font-size: .72rem; color: var(--accent); font-weight: 600; }
+
+    /* ── Right sidebar ── */
+    .right-sidebar { display: flex; flex-direction: column; gap: 1rem; }
+
+    .hot-topics { display: flex; flex-direction: column; gap: .35rem; }
+    .hot-topic {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: .45rem .4rem; border-radius: 8px;
+      transition: background .15s; cursor: pointer;
+    }
+    .hot-topic:hover { background: var(--tag-bg); }
+    .hot-left { display: flex; align-items: center; gap: .55rem; }
+    .hot-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); flex-shrink: 0; }
+    .hot-dot.b { background: #c4783a; }
+    .hot-dot.c { background: #4a7da8; }
+    .hot-dot.d { background: #b85080; }
+    .hot-dot.e { background: #6b6b3d; }
+    .hot-name  { font-size: .83rem; font-weight: 500; }
+    .hot-count { font-size: .73rem; color: var(--muted); }
+
+    .tags { display: flex; flex-wrap: wrap; gap: .4rem; }
+    .tag {
+      padding: .28rem .62rem; border-radius: 20px;
+      background: var(--tag-bg); color: var(--muted);
+      font-size: .77rem; font-weight: 600;
+      transition: background .15s, color .15s;
+    }
+    .tag:hover { background: var(--accent-lt); color: var(--accent); }
+
+    .creators { display: flex; flex-direction: column; gap: .5rem; }
+    .creator {
+      display: flex; align-items: center; gap: .6rem;
+      padding: .4rem .35rem; border-radius: 8px;
+      transition: background .15s;
+    }
+    .creator:hover { background: var(--tag-bg); }
+    .creator-avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .75rem; font-weight: 700; color: var(--text); flex-shrink: 0;
+    }
+    .creator-details { flex: 1; display: flex; flex-direction: column; }
+    .creator-name   { font-size: .82rem; font-weight: 600; }
+    .creator-handle { font-size: .73rem; color: var(--muted); }
+    .follow-btn {
+      padding: .25rem .65rem; border-radius: 20px;
+      border: 1.5px solid var(--accent); color: var(--accent);
+      font-size: .75rem; font-weight: 600;
+      transition: background .15s, color .15s;
+    }
+    .follow-btn:hover { background: var(--accent); color: #fff; }
+    .follow-btn.following { background: var(--accent-lt); border-color: transparent; color: var(--accent); }
+
+    .footer-card {
+      display: flex; flex-direction: column; gap: .25rem;
+      font-size: .73rem; color: var(--muted);
+    }
+
+    /* ── Lightbox ── */
+    .lightbox {
+      position: fixed; inset: 0; z-index: 999;
+      background: rgba(26,25,22,.82);
+      backdrop-filter: blur(6px);
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity .22s;
+    }
+    .lightbox.open { opacity: 1; pointer-events: all; }
+    .lb-inner {
+      background: var(--surface);
+      border-radius: 18px; overflow: hidden;
+      max-width: 480px; width: 90%;
+      transform: scale(.96); transition: transform .22s;
+      border: 1px solid var(--border);
+    }
+    .lightbox.open .lb-inner { transform: scale(1); }
+    .lb-photo { width: 100%; height: 300px; }
+    .lb-body  { padding: 1.1rem 1.2rem; }
+    .lb-user  { display: flex; align-items: center; gap: .65rem; margin-bottom: .7rem; }
+    .lb-avatar-wrap {
+      width: 36px; height: 36px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .82rem; font-weight: 700; color: var(--text); flex-shrink: 0;
+    }
+    .lb-user-info h3 { font-size: .9rem; font-weight: 600; }
+    .lb-user-info span { font-size: .75rem; color: var(--muted); }
+    .lb-caption { font-size: .88rem; line-height: 1.6; margin-bottom: .85rem; }
+    .lb-tags { display: flex; gap: .4rem; flex-wrap: wrap; margin-bottom: .9rem; }
+    .lb-tag {
+      padding: .2rem .55rem; border-radius: 12px;
+      background: var(--accent-lt); color: var(--accent);
+      font-size: .74rem; font-weight: 600;
+    }
+    .lb-actions { display: flex; gap: .5rem; }
+    .lb-btn {
+      padding: .38rem .9rem; border-radius: 8px;
+      font-size: .8rem; font-weight: 600;
+      color: var(--muted); background: var(--tag-bg);
+      transition: background .15s, color .15s;
+    }
+    .lb-btn:hover { background: var(--accent-lt); color: var(--accent); }
+    .lb-close {
+      position: fixed; top: 1.2rem; right: 1.4rem;
+      font-size: 1.3rem; color: #fff; cursor: pointer; z-index: 1000;
+      width: 34px; height: 34px; display: flex; align-items: center; justify-content: center;
+      border-radius: 50%; background: rgba(0,0,0,.35);
+      transition: background .15s;
+    }
+    .lb-close:hover { background: rgba(0,0,0,.6); }
+
+    /* ── Animations ── */
+    @keyframes fadeUp {
+      from { opacity:0; transform: translateY(14px); }
+      to   { opacity:1; transform: translateY(0); }
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .page { grid-template-columns: 1fr; }
+      .left-sidebar, .right-sidebar { display: none; }
+    }
+    @media (max-width: 480px) {
+      .photo-grid { columns: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="brand">
+      <div class="brand-logo">H</div>
+      <div class="brand-name">Hamro Samajik Hub</div>
+    </div>
+    <div class="nav-links">
+      <a href="index.html" class="nav-link">Home</a>
+      <a href="trending.html" class="nav-link active">Trending</a>
+      <a href="profile.html" class="nav-link">Profile</a>
+    </div>
+    <div class="nav-right">
+      <a href="login.html" class="login-btn">Login</a>
+    </div>
+  </nav>
+
+  <div class="page">
+
+    <!-- Left Sidebar -->
+    <aside class="left-sidebar">
+      <div class="welcome-card">
+        <span class="welcome-badge">Explore</span>
+        <h1>Photos the community is loving right now.</h1>
+        <p>Browse trending shots, rising creators, and today's most shared moments.</p>
+      </div>
+      <div class="card quick-links">
+        <a href="index.html" class="quick-link">
+          <span class="ql-icon">H</span><span>Home Feed</span>
+        </a>
+        <a href="profile.html" class="quick-link">
+          <span class="ql-icon">P</span><span>My Profile</span>
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="main-content">
+
+      <div class="trending-header-card">
+        <div class="th-left">
+          <h2>Trending Photos</h2>
+          <p>126 photos shared today · updated hourly</p>
+        </div>
+        <div class="filter-tabs">
+          <button class="filter-tab active">Today</button>
+          <button class="filter-tab">This Week</button>
+          <button class="filter-tab">All Time</button>
+        </div>
+      </div>
+
+      <!-- Stories -->
+      <div class="stories-bar">
+        <div class="stories-scroll">
+          <a href="profile.html" class="story">
+            <div class="story-ring"><div class="story-avatar bg-maulik">M</div></div>
+            <span class="story-name">Maulik</span>
+          </a>
+          <a href="profile.html" class="story">
+            <div class="story-ring"><div class="story-avatar bg-krish">K</div></div>
+            <span class="story-name">Krish</span>
+          </a>
+          <a href="profile.html" class="story">
+            <div class="story-ring"><div class="story-avatar bg-khushi">K</div></div>
+            <span class="story-name">Khushi</span>
+          </a>
+          <a href="profile.html" class="story">
+            <div class="story-ring"><div class="story-avatar bg-anwesha">A</div></div>
+            <span class="story-name">Anwesha</span>
+          </a>
+          <a href="profile.html" class="story">
+            <div class="story-ring"><div class="story-avatar bg-krish">R</div></div>
+            <span class="story-name">Rahul</span>
+          </a>
+          <a href="profile.html" class="story">
+            <div class="story-ring"><div class="story-avatar bg-khushi">P</div></div>
+            <span class="story-name">Priya</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Photo Grid -->
+      <div class="photo-grid" id="photoGrid">
+
+        <div class="photo-card" data-user="Maulik" data-color="var(--col-maulik)" data-imgclass="img-1" data-caption="Golden hour in the valley. Sometimes you just stop walking and let the light do everything." data-tags="#nature #golden #minimal" data-likes="148" data-comments="24">
+          <div class="photo-img img-1"></div>
+          <div class="photo-overlay">
+            <div class="overlay-stats">
+              <span class="ostat"><svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>148</span>
+              <span class="ostat"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>24</span>
+            </div>
+          </div>
+          <div class="photo-meta">
+            <div class="pmeta-avatar bg-maulik">M</div>
+            <span class="pmeta-name">Maulik</span>
+            <span class="pmeta-tag">#nature</span>
+          </div>
+        </div>
+
+        <div class="photo-card" data-user="Khushi" data-color="var(--col-khushi)" data-imgclass="img-2" data-caption="New kit drop. Clean sections, soft gradients, rounded cards — free for the community." data-tags="#design #web #ui" data-likes="95" data-comments="11">
+          <div class="photo-img img-2"></div>
+          <div class="photo-overlay">
+            <div class="overlay-stats">
+              <span class="ostat"><svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>95</span>
+              <span class="ostat"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>11</span>
+            </div>
+          </div>
+          <div class="photo-meta">
+            <div class="pmeta-avatar bg-khushi">K</div>
+            <span class="pmeta-name">Khushi</span>
+            <span class="pmeta-tag">#design</span>
+          </div>
+        </div>
+
+        <div class="photo-card" data-user="Anwesha" data-color="var(--col-anwesha)" data-imgclass="img-3" data-caption="Profile hub concept — less grid, more story. What should a profile actually feel like?" data-tags="#socialhub #community" data-likes="72" data-comments="18">
+          <div class="photo-img img-3"></div>
+          <div class="photo-overlay">
+            <div class="overlay-stats">
+              <span class="ostat"><svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>72</span>
+              <span class="ostat"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>18</span>
+            </div>
+          </div>
+          <div class="photo-meta">
+            <div class="pmeta-avatar bg-anwesha">A</div>
+            <span class="pmeta-name">Anwesha</span>
+            <span class="pmeta-tag">#community</span>
+          </div>
+        </div>
+
+        <div class="photo-card" data-user="Maulik" data-color="var(--col-maulik)" data-imgclass="img-4" data-caption="Texture study. Warm sand grain over a muted palette. My obsession this week." data-tags="#texture #design #minimal" data-likes="134" data-comments="9">
+          <div class="photo-img img-4"></div>
+          <div class="photo-overlay">
+            <div class="overlay-stats">
+              <span class="ostat"><svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>134</span>
+              <span class="ostat"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>9</span>
+            </div>
+          </div>
+          <div class="photo-meta">
+            <div class="pmeta-avatar bg-maulik">M</div>
+            <span class="pmeta-name">Maulik</span>
+            <span class="pmeta-tag">#texture</span>
+          </div>
+        </div>
+
+        <div class="photo-card" data-user="Krish" data-color="var(--col-krish)" data-imgclass="img-5" data-caption="Morning mist over the hills. No edits. Sometimes reality is already the best filter." data-tags="#photography #nature" data-likes="88" data-comments="7">
+          <div class="photo-img img-5"></div>
+          <div class="photo-overlay">
+            <div class="overlay-stats">
+              <span class="ostat"><svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>88</span>
+              <span class="ostat"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>7</span>
+            </div>
+          </div>
+          <div class="photo-meta">
+            <div class="pmeta-avatar bg-krish">K</div>
+            <span class="pmeta-name">Krish</span>
+            <span class="pmeta-tag">#nature</span>
+          </div>
+        </div>
+
+        <div class="photo-card" data-user="Khushi" data-color="var(--col-khushi)" data-imgclass="img-6" data-caption="Warm tones for a warm evening. Shot from the rooftop — couldn't sleep anyway." data-tags="#photography #golden #mood" data-likes="109" data-comments="15">
+          <div class="photo-img img-6"></div>
+          <div class="photo-overlay">
+            <div class="overlay-stats">
+              <span class="ostat"><svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>109</span>
+              <span class="ostat"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>15</span>
+            </div>
+          </div>
+          <div class="photo-meta">
+            <div class="pmeta-avatar bg-khushi">K</div>
+            <span class="pmeta-name">Khushi</span>
+            <span class="pmeta-tag">#mood</span>
+          </div>
+        </div>
+
+        <div class="photo-card" data-user="Krish" data-color="var(--col-krish)" data-imgclass="img-7" data-caption="Cool morning blues. Found this corner before the city woke up." data-tags="#street #minimal" data-likes="61" data-comments="5">
+          <div class="photo-img img-7"></div>
+          <div class="photo-overlay">
+            <div class="overlay-stats">
+              <span class="ostat"><svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>61</span>
+              <span class="ostat"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>5</span>
+            </div>
+          </div>
+          <div class="photo-meta">
+            <div class="pmeta-avatar bg-krish">K</div>
+            <span class="pmeta-name">Krish</span>
+            <span class="pmeta-tag">#street</span>
+          </div>
+        </div>
+
+        <div class="photo-card" data-user="Anwesha" data-color="var(--col-anwesha)" data-imgclass="img-8" data-caption="Dreamy lavender study. This palette feels like a quiet Sunday morning." data-tags="#palette #design #mood" data-likes="120" data-comments="20">
+          <div class="photo-img img-8"></div>
+          <div class="photo-overlay">
+            <div class="overlay-stats">
+              <span class="ostat"><svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>120</span>
+              <span class="ostat"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>20</span>
+            </div>
+          </div>
+          <div class="photo-meta">
+            <div class="pmeta-avatar bg-anwesha">A</div>
+            <span class="pmeta-name">Anwesha</span>
+            <span class="pmeta-tag">#palette</span>
+          </div>
+        </div>
+
+        <div class="photo-card" data-user="Krish" data-color="var(--col-krish)" data-imgclass="img-9" data-caption="Mint and sage after rain. Clean, fresh, and completely unplanned." data-tags="#nature #photography" data-likes="77" data-comments="6">
+          <div class="photo-img img-9"></div>
+          <div class="photo-overlay">
+            <div class="overlay-stats">
+              <span class="ostat"><svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>77</span>
+              <span class="ostat"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>6</span>
+            </div>
+          </div>
+          <div class="photo-meta">
+            <div class="pmeta-avatar bg-krish">K</div>
+            <span class="pmeta-name">Krish</span>
+            <span class="pmeta-tag">#photography</span>
+          </div>
+        </div>
+
+        <div class="photo-card" data-user="Maulik" data-color="var(--col-maulik)" data-imgclass="img-10" data-caption="Amber afternoon. The light hit different today — couldn't put the camera down." data-tags="#golden #photography #mood" data-likes="156" data-comments="28">
+          <div class="photo-img img-10"></div>
+          <div class="photo-overlay">
+            <div class="overlay-stats">
+              <span class="ostat"><svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>156</span>
+              <span class="ostat"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>28</span>
+            </div>
+          </div>
+          <div class="photo-meta">
+            <div class="pmeta-avatar bg-maulik">M</div>
+            <span class="pmeta-name">Maulik</span>
+            <span class="pmeta-tag">#golden</span>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- Right Sidebar -->
+    <aside class="right-sidebar">
+      <div class="card">
+        <h3 class="sidebar-heading">Hot Topics</h3>
+        <div class="hot-topics">
+          <div class="hot-topic">
+            <div class="hot-left"><div class="hot-dot"></div><span class="hot-name">Calm UI Design</span></div>
+            <span class="hot-count">34</span>
+          </div>
+          <div class="hot-topic">
+            <div class="hot-left"><div class="hot-dot b"></div><span class="hot-name">Golden Hour</span></div>
+            <span class="hot-count">28</span>
+          </div>
+          <div class="hot-topic">
+            <div class="hot-left"><div class="hot-dot c"></div><span class="hot-name">City Morning</span></div>
+            <span class="hot-count">21</span>
+          </div>
+          <div class="hot-topic">
+            <div class="hot-left"><div class="hot-dot d"></div><span class="hot-name">Colour Palettes</span></div>
+            <span class="hot-count">17</span>
+          </div>
+          <div class="hot-topic">
+            <div class="hot-left"><div class="hot-dot e"></div><span class="hot-name">Texture Studies</span></div>
+            <span class="hot-count">12</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 class="sidebar-heading">Trending Tags</h3>
+        <div class="tags">
+          <a href="#" class="tag">#design</a>
+          <a href="#" class="tag">#minimal</a>
+          <a href="#" class="tag">#golden</a>
+          <a href="#" class="tag">#nature</a>
+          <a href="#" class="tag">#mood</a>
+          <a href="#" class="tag">#web</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 class="sidebar-heading">Suggested Creators</h3>
+        <div class="creators">
+          <a href="profile.html" class="creator">
+            <div class="creator-avatar bg-krish">K</div>
+            <div class="creator-details">
+              <span class="creator-name">Krish</span>
+              <span class="creator-handle">@krish</span>
+            </div>
+            <button class="follow-btn" onclick="toggleFollow(event,this)">Follow</button>
+          </a>
+          <a href="profile.html" class="creator">
+            <div class="creator-avatar bg-khushi">K</div>
+            <div class="creator-details">
+              <span class="creator-name">Khushi</span>
+              <span class="creator-handle">@khushi</span>
+            </div>
+            <button class="follow-btn" onclick="toggleFollow(event,this)">Follow</button>
+          </a>
+          <a href="profile.html" class="creator">
+            <div class="creator-avatar bg-maulik">M</div>
+            <div class="creator-details">
+              <span class="creator-name">Maulik</span>
+              <span class="creator-handle">@maulik</span>
+            </div>
+            <button class="follow-btn" onclick="toggleFollow(event,this)">Follow</button>
+          </a>
+        </div>
+      </div>
+
+      <div class="card footer-card">
+        <span>&copy; 2026 Hamro Samajik Hub</span>
+        <span>Made by Team RSP</span>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox">
+    <span class="lb-close" id="lbClose">&times;</span>
+    <div class="lb-inner">
+      <div class="photo-img lb-photo" id="lbPhoto"></div>
+      <div class="lb-body">
+        <div class="lb-user">
+          <div class="lb-avatar-wrap" id="lbAvatar"></div>
+          <div class="lb-user-info">
+            <h3 id="lbUser"></h3>
+            <span>Just now</span>
+          </div>
+        </div>
+        <p class="lb-caption" id="lbCaption"></p>
+        <div class="lb-tags" id="lbTags"></div>
+        <div class="lb-actions">
+          <button class="lb-btn" id="lbLike">Like</button>
+          <button class="lb-btn">Comment</button>
+          <button class="lb-btn">Share</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Filter tabs
+    document.querySelectorAll('.filter-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+      });
+    });
+
+    // Follow toggle
+    function toggleFollow(e, btn) {
+      e.preventDefault();
+      btn.classList.toggle('following');
+      btn.textContent = btn.classList.contains('following') ? 'Following' : 'Follow';
+    }
+
+    // Avatar bg map
+    const avatarMap = {
+      'Maulik':  { cls: 'bg-maulik',  initial: 'M' },
+      'Khushi':  { cls: 'bg-khushi',  initial: 'K' },
+      'Krish':   { cls: 'bg-krish',   initial: 'K' },
+      'Anwesha': { cls: 'bg-anwesha', initial: 'A' },
+    };
+
+    // Lightbox
+    const lightbox = document.getElementById('lightbox');
+    document.querySelectorAll('.photo-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const imgClass = card.dataset.imgclass;
+        document.getElementById('lbPhoto').className = 'photo-img lb-photo ' + imgClass;
+        document.getElementById('lbUser').textContent = card.dataset.user;
+        document.getElementById('lbCaption').textContent = card.dataset.caption;
+
+        const av = avatarMap[card.dataset.user] || { cls: '', initial: '?' };
+        const lbAv = document.getElementById('lbAvatar');
+        lbAv.className = 'lb-avatar-wrap ' + av.cls;
+        lbAv.textContent = av.initial;
+
+        const tagsEl = document.getElementById('lbTags');
+        tagsEl.innerHTML = '';
+        card.dataset.tags.split(' ').forEach(tag => {
+          const span = document.createElement('span');
+          span.className = 'lb-tag';
+          span.textContent = tag;
+          tagsEl.appendChild(span);
+        });
+
+        document.getElementById('lbLike').classList.remove('liked');
+        document.getElementById('lbLike').textContent = 'Like';
+        document.getElementById('lbLike').style = '';
+        lightbox.classList.add('open');
+      });
+    });
+
+    document.getElementById('lbClose').addEventListener('click', () => lightbox.classList.remove('open'));
+    lightbox.addEventListener('click', e => { if (e.target === lightbox) lightbox.classList.remove('open'); });
+
+    document.getElementById('lbLike').addEventListener('click', function() {
+      this.classList.toggle('liked');
+      if (this.classList.contains('liked')) {
+        this.style.background = 'var(--accent-lt)';
+        this.style.color = 'var(--accent)';
+        this.textContent = 'Liked ✓';
+      } else {
+        this.style = '';
+        this.textContent = 'Like';
+      }
+    });
+  </script>
+
+</body>
+</html>
