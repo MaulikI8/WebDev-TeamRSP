@@ -411,7 +411,7 @@
 
     /* ── Right sidebar ── */
     .right-sidebar { display: flex; flex-direction: column; gap: 1rem; }
-
+ 
     .hot-topics { display: flex; flex-direction: column; gap: .35rem; }
     .hot-topic {
       display: flex; align-items: center; justify-content: space-between;
@@ -427,7 +427,7 @@
     .hot-dot.e { background: #6b6b3d; }
     .hot-name  { font-size: .83rem; font-weight: 500; }
     .hot-count { font-size: .73rem; color: var(--muted); }
-
+ 
     .tags { display: flex; flex-wrap: wrap; gap: .4rem; }
     .tag {
       padding: .28rem .62rem; border-radius: 20px;
@@ -436,7 +436,7 @@
       transition: background .15s, color .15s;
     }
     .tag:hover { background: var(--accent-lt); color: var(--accent); }
-
+ 
     .creators { display: flex; flex-direction: column; gap: .5rem; }
     .creator {
       display: flex; align-items: center; gap: .6rem;
